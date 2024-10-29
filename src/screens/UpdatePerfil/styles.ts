@@ -1,13 +1,13 @@
 import styled from "styled-components/native";
 
-export const RegisterContainer = styled.View`
+export const UpdateContainer = styled.View`
   height: 100%;
   background-color: #ece8cb;
   align-items: center;
   justify-content: center;
 `;
 
-export const RegisterHeader = styled.View`
+export const UpdateHeader = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -47,7 +47,7 @@ export const ErrorMessage = styled.Text`
 `;
 
 export const StyledButton = styled.TouchableOpacity`
-  margin-top: 30px;
+  margin-top: 20px;
   background-color: #ea8720;
   padding: 20px 60px 20px 60px;
   border-radius: 6px;

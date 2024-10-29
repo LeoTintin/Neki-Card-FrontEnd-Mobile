@@ -1,11 +1,19 @@
-import { Text } from "react-native";
-import { LoginContainer, StyledButton, StyledTextInput, Title, ErrorMessage } from "./styles";
+import {
+  LoginContainer,
+  StyledButton,
+  StyledTextInput,
+  Title,
+  ErrorMessage,
+  StyledTextButton,
+} from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../routes/Router";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
+import { api } from "../../service/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type FormDataProps = {
   nome: string;
@@ -26,7 +34,7 @@ type LoginNavigationProp = NativeStackNavigationProp<
 
 export default function Login() {
   const navigation = useNavigation<LoginNavigationProp>();
-  
+
   const {
     control,
     handleSubmit,
@@ -35,9 +43,30 @@ export default function Login() {
     resolver: yupResolver(LoginFormSchema),
   });
 
-  const handleLogin = (data: FormDataProps) => {
-    navigation.navigate("Home");
-  };
+  async function handleLogin(data: FormDataProps) {
+    try {
+      const response = await api.post("/auth/login", data);
+      const token = response.data.token;
+
+      if (token) {
+        await AsyncStorage.setItem("token", token);
+        console.log("Token recebido:", token);
+        alert("Usuário logado com sucesso!");
+
+        navigation.navigate("Home");
+      } else {
+        alert("Token não recebido. Verifique a resposta do servidor.");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Erro de rede:", error.message);
+        alert("Erro de rede: " + error.message);
+      } else {
+        console.error("Erro inesperado:", error);
+        alert("Erro inesperado: " + error.message);
+      }
+    }
+  }
 
   return (
     <LoginContainer>
@@ -52,7 +81,7 @@ export default function Login() {
               placeholder="Nome"
               onChangeText={onChange}
               value={value}
-              hasError={!!errors.nome} 
+              hasError={!!errors.nome}
             />
             {errors.nome && <ErrorMessage>{errors.nome.message}</ErrorMessage>}
           </>
@@ -70,7 +99,9 @@ export default function Login() {
               value={value}
               hasError={!!errors.email}
             />
-            {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
+            {errors.email && (
+              <ErrorMessage>{errors.email.message}</ErrorMessage>
+            )}
           </>
         )}
       />
@@ -87,13 +118,15 @@ export default function Login() {
               secureTextEntry
               hasError={!!errors.senha}
             />
-            {errors.senha && <ErrorMessage>{errors.senha.message}</ErrorMessage>}
+            {errors.senha && (
+              <ErrorMessage>{errors.senha.message}</ErrorMessage>
+            )}
           </>
         )}
       />
 
       <StyledButton onPress={handleSubmit(handleLogin)}>
-        <Text>Entrar</Text>
+        <StyledTextButton>Entrar</StyledTextButton>
       </StyledButton>
     </LoginContainer>
   );

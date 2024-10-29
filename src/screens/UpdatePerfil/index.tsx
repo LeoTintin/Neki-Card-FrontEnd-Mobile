@@ -5,18 +5,18 @@ import {
   Title,
   ErrorMessage,
   DateInput,
-  StyledTextButton,
-  RegisterContainer,
-  RegisterHeader,
+  UpdateContainer,
+  UpdateHeader,
   GoBackButton,
+  StyledTextButton,
   ImgPresable,
+  StyledImageInput,
   ImgContainer,
   ImageView,
-  StyledImageInput,
 } from "./styles";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../routes/Router";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
@@ -38,7 +38,7 @@ type FormDataProps = {
   redeSocial: string;
 };
 
-const RegisterFormSchema = yup.object().shape({
+const UpdateFormSchema = yup.object().shape({
   nome: yup.string().required("Nome é obrigatório"),
   email: yup.string().email("Formato inválido").required("Email é obrigatório"),
   dataNascimento: yup.string().required("Insira uma data de nascimento"),
@@ -48,14 +48,15 @@ const RegisterFormSchema = yup.object().shape({
   redeSocial: yup.string().optional(),
 });
 
-type RegisterNavigation = NativeStackNavigationProp<
-  RootStackParamList,
-  "Register"
->;
+type UpdateNavigation = NativeStackNavigationProp<RootStackParamList, "Update">;
 
-export default function Register() {
-  const navigation = useNavigation<RegisterNavigation>();
+export default function UpdatePerfil() {
+  const navigation = useNavigation<UpdateNavigation>();
+  const route = useRoute();
+  const { perfilId } = route.params;
+  console.log(perfilId);
 
+  console.log(perfilId);
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
@@ -70,7 +71,7 @@ export default function Register() {
     setValue,
     formState: { errors },
   } = useForm<FormDataProps>({
-    resolver: yupResolver(RegisterFormSchema),
+    resolver: yupResolver(UpdateFormSchema),
   });
 
   const handleImagePicker = async () => {
@@ -108,9 +109,7 @@ export default function Register() {
         toggleDatePicker();
       }
 
-      const adjustedDate = new Date(currentDate);
-      adjustedDate.setUTCHours(0, 0, 0, 0);
-      const formattedDate = adjustedDate.toISOString().split("T")[0];
+      const formattedDate = currentDate.toISOString().split("T")[0];
       setValue("dataNascimento", formattedDate);
     } else {
       toggleDatePicker();
@@ -146,32 +145,32 @@ export default function Register() {
         return;
       }
 
-      const response = await api.post("/perfil", formData, {
+      const response = await api.put(`/perfil/${perfilId}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
 
-      alert("Perfil criado com sucesso!");
+      alert("Perfil Atualizado com sucesso!");
       navigation.navigate("Home");
     } catch (error) {
-      console.error("Erro ao criar perfil:", error);
+      console.error("Erro ao atualizar perfil:", error);
       alert(
-        "Erro ao criar perfil: " +
+        "Erro ao atualizar perfil: " +
           (error.response?.data?.message || error.message)
       );
     }
   };
 
   return (
-    <RegisterContainer>
-      <RegisterHeader>
-        <Title>Novo Perfil</Title>
+    <UpdateContainer>
+      <UpdateHeader>
+        <Title>Atualizar</Title>
         <GoBackButton onPress={() => navigation.navigate("Home")}>
           <ArrowLeft size={26} color="#ea8720" />
         </GoBackButton>
-      </RegisterHeader>
+      </UpdateHeader>
 
       <Controller
         control={control}
@@ -283,8 +282,8 @@ export default function Register() {
       )}
 
       <StyledButton onPress={handleSubmit(criarPerfil)}>
-        <StyledTextButton>Criar novo perfil</StyledTextButton>
+        <StyledTextButton>Atualizar perfil</StyledTextButton>
       </StyledButton>
-    </RegisterContainer>
+    </UpdateContainer>
   );
 }

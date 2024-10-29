@@ -79,3 +79,16 @@ export const RedeSocial = styled.Text`
   max-width: 100%;
   color: #ea8720;
 `;
+
+export const ButtonsContainer = styled.View`
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+`;
+export const PerfilCardButton = styled.TouchableOpacity`
+  background: transparent;
+  border: none;
+
+`;

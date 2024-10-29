@@ -17,15 +17,15 @@ export const Title = styled.Text`
 export const StyledTextInput = styled.TextInput<{ hasError?: boolean }>`
   width: 80%;
   border-bottom-width: 1px;
-  border-bottom-color: ${({ hasError }) => (hasError ? 'red' : '#ea8720')};
+  border-bottom-color: ${({ hasError }) => (hasError ? "red" : "#ea8720")};
   color: #ea8720;
   padding: 10px;
   margin-bottom: 15px;
 `;
 
 export const ErrorMessage = styled.Text`
-  color: red; 
-  margin-bottom: 15px; 
+  color: red;
+  margin-bottom: 15px;
 `;
 
 export const StyledButton = styled.TouchableOpacity`
@@ -33,4 +33,9 @@ export const StyledButton = styled.TouchableOpacity`
   background-color: #ea8720;
   padding: 20px 60px;
   border-radius: 6px;
+`;
+
+export const StyledTextButton = styled.Text`
+  color: #fff;
+  font-weight: bold;
 `;
