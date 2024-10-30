@@ -5,7 +5,7 @@ import Toast from "react-native-toast-message";
 
 export default function App() {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor:"#ece8cb"}}>
       <Routes />
       <StatusBar />
       <Toast />

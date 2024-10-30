@@ -47,7 +47,20 @@ type FormDataProps = {
 
 const UpdateFormSchema = yup.object().shape({
   nome: yup.string().required("Nome é obrigatório"),
-  email: yup.string().email("Formato inválido").required("Email é obrigatório"),
+  email: yup
+    .string()
+    .email("Formato inválido")
+    .required("Email é obrigatório")
+    .test(
+      "domain-validation",
+      "O email deve terminar com @neki-it.com.br ou @neki.com.br",
+      (email) => {
+        return (
+          typeof email === "string" &&
+          (email.endsWith("@neki-it.com.br") || email.endsWith("@neki.com.br"))
+        );
+      }
+    ),
   dataNascimento: yup.string().required("Insira uma data de nascimento"),
 
   nomeSocial: yup.string().optional(),
@@ -212,7 +225,7 @@ export default function UpdatePerfil() {
   return (
     <UpdateContainer>
       <UpdateHeader>
-        <Tittle>Perfil</Tittle>
+        <Tittle>Atualizar perfil</Tittle>
         <GoBackButton onPress={() => navigation.navigate("Home")}>
           <ArrowLeft size={26} color="#ea8720" />
         </GoBackButton>

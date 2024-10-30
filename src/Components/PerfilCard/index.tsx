@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image, Alert, TouchableOpacity } from "react-native";
+import { Alert, TouchableOpacity } from "react-native";
 import {
   PerfilCardContainer,
   PerfilEmail,
@@ -12,8 +12,10 @@ import {
   RedeSocial,
   ButtonsContainer,
   PerfilCardButton,
+  ProfileID,
+  ProfileIdButton,
 } from "./styles";
-import { NotePencil, PencilLine, Trash } from "phosphor-react-native";
+import { NotePencil, Trash } from "phosphor-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "../../service/api";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -95,6 +97,11 @@ export default function PerfilCard({ perfil, refetch }) {
 
   return (
     <PerfilCardContainer>
+      <ProfileIdButton
+        onPress={() => navigation.navigate("Specific", { perfilId: perfil.id })}
+      >
+        <ProfileID>{perfil.id} </ProfileID>
+      </ProfileIdButton>
       <TouchableOpacity
         onPress={() => navigation.navigate("Specific", { perfilId: perfil.id })}
       >

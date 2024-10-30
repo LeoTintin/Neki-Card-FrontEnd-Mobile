@@ -4,15 +4,32 @@ export const PerfilCardContainer = styled.View`
   width: 100%;
   max-width: 300px;
   background-color: #ece8cb;
-  border-radius: 6px 36px 6px 36px;
+  border-radius: 6px 36px 36px 36px;
   padding: 16px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 30px;
   align-items: center;
   text-align: center;
   border: 1px solid #ea8720;
+  position: relative;
   box-sizing: border-box;
+  margin: 10px 30px 10px 30px;
+`;
+
+export const ProfileIdButton = styled.TouchableOpacity`
+  background-color: #ea8720;
+  border-radius: 20px;
+  margin-right: auto;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+`;
+
+export const ProfileID = styled.Text`
+  color: #ece8cb;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 8px;
 `;
 
 export const ProfileImage = styled.Image`
@@ -90,5 +107,4 @@ export const ButtonsContainer = styled.View`
 export const PerfilCardButton = styled.TouchableOpacity`
   background: transparent;
   border: none;
-
 `;

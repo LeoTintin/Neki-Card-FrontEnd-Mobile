@@ -1,8 +1,6 @@
 import { Platform } from "react-native";
 import {
-  StyledButton,
   StyledTextInput,
-  Title,
   ErrorMessage,
   DateInput,
   StyledTextButton,
@@ -43,7 +41,20 @@ type FormDataProps = {
 
 const RegisterFormSchema = yup.object().shape({
   nome: yup.string().required("Nome é obrigatório"),
-  email: yup.string().email("Formato inválido").required("Email é obrigatório"),
+  email: yup
+    .string()
+    .email("Formato inválido")
+    .required("Email é obrigatório")
+    .test(
+      "domain-validation",
+      "O email deve terminar com @neki-it.com.br ou @neki.com.br",
+      (email) => {
+        return (
+          typeof email === "string" &&
+          (email.endsWith("@neki-it.com.br") || email.endsWith("@neki.com.br"))
+        );
+      }
+    ),
   dataNascimento: yup.string().required("Insira uma data de nascimento"),
 
   nomeSocial: yup.string().optional(),
