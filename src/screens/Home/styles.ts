@@ -15,12 +15,14 @@ export const HomeContainer = styled.View`
   justify-content: center;
 `;
 
-export const PerfilTitle = styled.Text`
-  font-size: 24px;
-  margin-top: 60px;
-  margin-bottom: 20px;
-  color: #ea8720;
-  font-weight: bold;
+export const SearchInput = styled.TextInput`
+  width: 60%;
+  border-bottom-width: 1px;
+  border-bottom-color: #ea8720;
+  color: #403937;
+  font-weight: 700;
+  padding: 10px;
+  margin-bottom: 15px;
   letter-spacing: 1px;
 `;
 
@@ -33,18 +35,10 @@ export const PerfiList = styled.View`
   gap: 10px;
 `;
 
-export const HomeButton = styled.TouchableOpacity`
-  margin-top: 20px;
-  background-color: #ea8720;
-  padding: 20px 60px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  align-items: center;
-`;
-
 export const PefilList = styled.FlatList`
   margin-bottom: 60px;
 `;
+
 export const HomeButtonText = styled.Text`
   color: #fff;
   font-weight: bold;

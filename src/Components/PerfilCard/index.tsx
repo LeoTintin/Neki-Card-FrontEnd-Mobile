@@ -19,13 +19,14 @@ import { api } from "../../service/api";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../routes/Router";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 type PerfilNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "Home"
 >;
 
-export default function PerfilCard({ perfil }) {
+export default function PerfilCard({ perfil, refetch }) {
   const navigation = useNavigation<PerfilNavigationProp>();
   const [isPressed, setIsPressed] = useState(false);
   const formatDate = (dateString) => {
@@ -47,8 +48,12 @@ export default function PerfilCard({ perfil }) {
       [
         {
           text: "Cancelar",
-          onPress: () => alert("A operação de exclusão foi cancelada."),
-          style: "cancel",
+          onPress: () =>
+            Toast.show({
+              text1: "Cancelada",
+              text2: "Operação de exclusão cancelada",
+              visibilityTime: 1700,
+            }),
         },
         {
           text: "OK",
@@ -66,10 +71,20 @@ export default function PerfilCard({ perfil }) {
                   Authorization: `Bearer ${token}`,
                 },
               });
-              alert("Perfil excluído com sucesso!");
+              Toast.show({
+                type: "success",
+                text1: "Sucesso!",
+                text2: "Perfil excluido com sucesso!",
+                visibilityTime: 1700,
+              });
+              refetch();
             } catch (error) {
-              console.error("Erro ao deletar perfil!", error);
-              alert("Erro ao deletar perfil!");
+              Toast.show({
+                type: "error",
+                text1: "Erro!",
+                text2: "Erro ao deletar perfil!",
+                visibilityTime: 1700,
+              });
             }
           },
         },
@@ -81,7 +96,7 @@ export default function PerfilCard({ perfil }) {
   return (
     <PerfilCardContainer>
       <TouchableOpacity
-        onPress={() => navigation.navigate("Specific", { perfilId: perfil.id })} //
+        onPress={() => navigation.navigate("Specific", { perfilId: perfil.id })}
       >
         <ProfileImage
           source={{ uri: `http://10.0.2.2:8080/imagens/${perfil.foto}` }}

@@ -15,13 +15,6 @@ export const RegisterHeader = styled.View`
   margin-bottom: 60px;
 `;
 
-export const Title = styled.Text`
-  font-size: 24px;
-  color: #ea8720;
-  font-weight: bold;
-  letter-spacing: 1px;
-`;
-
 export const GoBackButton = styled.TouchableOpacity`
   background: transparent;
   border: none;

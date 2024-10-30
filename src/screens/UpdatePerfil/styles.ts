@@ -15,13 +15,6 @@ export const UpdateHeader = styled.View`
   margin-bottom: 60px;
 `;
 
-export const Title = styled.Text`
-  font-size: 24px;
-  color: #ea8720;
-  font-weight: bold;
-  letter-spacing: 1px;
-`;
-
 export const GoBackButton = styled.TouchableOpacity`
   background: transparent;
   border: none;
@@ -44,13 +37,6 @@ export const DateInput = styled.Pressable`
 export const ErrorMessage = styled.Text`
   color: red;
   margin-bottom: 15px;
-`;
-
-export const StyledButton = styled.TouchableOpacity`
-  margin-top: 20px;
-  background-color: #ea8720;
-  padding: 20px 60px 20px 60px;
-  border-radius: 6px;
 `;
 
 export const StyledTextButton = styled.Text`

@@ -16,23 +16,30 @@ import {
 } from "./styles";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../routes/Router";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { ImagePickerResult } from "expo-image-picker";
 import { api } from "../../service/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ArrowLeft, Camera } from "phosphor-react-native";
+import Button from "../../Components/Button";
+import Tittle from "../../Components/Tittle";
+import Toast from "react-native-toast-message";
 
 type FormDataProps = {
   nome: string;
   email: string;
   dataNascimento: string;
-  arquivo: string;
+  foto: string;
   nomeSocial: string;
   telefone: string;
   redeSocial: string;
@@ -54,13 +61,10 @@ export default function UpdatePerfil() {
   const navigation = useNavigation<UpdateNavigation>();
   const route = useRoute();
   const { perfilId } = route.params;
-  console.log(perfilId);
 
-  console.log(perfilId);
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
-
   const toggleDatePicker = () => {
     setShowPicker(!showPicker);
   };
@@ -73,6 +77,42 @@ export default function UpdatePerfil() {
   } = useForm<FormDataProps>({
     resolver: yupResolver(UpdateFormSchema),
   });
+
+  const loadProfileData = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        alert("Token não encontrado.Faça login novamente");
+        return;
+      }
+      const response = await api.get(`/perfil/${perfilId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response.data;
+      setValue("nome", data.nome);
+      setValue("email", data.email);
+      setValue("nomeSocial", data.nomeSocial);
+      setValue("dataNascimento", data.dataNascimento);
+      setValue("telefone", data.telefone);
+      setValue("redeSocial", data.redeSocial);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Erro!",
+        text2: "Erro ao carregar perfil!",
+        visibilityTime: 1700,
+      });
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadProfileData();
+    }, [])
+  );
 
   const handleImagePicker = async () => {
     const permissionResult =
@@ -91,7 +131,7 @@ export default function UpdatePerfil() {
       if (selectedFileUri) {
         console.log("Imagem selecionada:", selectedFileUri);
         setSelectedFile(selectedFileUri);
-        setValue("arquivo", selectedFileUri);
+        setValue("foto", selectedFileUri);
       } else {
         console.log("A URI da imagem não foi encontrada.");
       }
@@ -130,7 +170,7 @@ export default function UpdatePerfil() {
         const uriParts = selectedFile.split(".");
         const fileType = uriParts[uriParts.length - 1];
 
-        formData.append("arquivo", {
+        formData.append("foto", {
           uri: selectedFile,
           name: `image.${fileType}`,
           type: `image/${fileType}`,
@@ -152,21 +192,27 @@ export default function UpdatePerfil() {
         },
       });
 
-      alert("Perfil Atualizado com sucesso!");
-      navigation.navigate("Home");
+      Toast.show({
+        type: "success",
+        text1: "Sucesso!",
+        text2: "Perfil atualizado com sucesso!",
+        visibilityTime: 1700,
+      });
+      navigation.navigate("Home", { updated: true });
     } catch (error) {
-      console.error("Erro ao atualizar perfil:", error);
-      alert(
-        "Erro ao atualizar perfil: " +
-          (error.response?.data?.message || error.message)
-      );
+      Toast.show({
+        type: "error",
+        text1: "Erro!",
+        text2: "Erro ao atualizar perfil!",
+        visibilityTime: 1700,
+      });
     }
   };
 
   return (
     <UpdateContainer>
       <UpdateHeader>
-        <Title>Atualizar</Title>
+        <Tittle>Perfil</Tittle>
         <GoBackButton onPress={() => navigation.navigate("Home")}>
           <ArrowLeft size={26} color="#ea8720" />
         </GoBackButton>
@@ -272,18 +318,19 @@ export default function UpdatePerfil() {
 
       <ImgPresable onPress={handleImagePicker}>
         <StyledImageInput editable={false} />
-        <Camera size={32} color="#ea8720" />
+
+        {selectedFile ? (
+          <ImgContainer>
+            <ImageView source={{ uri: selectedFile }} />
+          </ImgContainer>
+        ) : (
+          <Camera size={32} color="#ea8720" />
+        )}
       </ImgPresable>
 
-      {selectedFile && (
-        <ImgContainer>
-          <ImageView source={{ uri: selectedFile }} />
-        </ImgContainer>
-      )}
-
-      <StyledButton onPress={handleSubmit(criarPerfil)}>
+      <Button onPress={handleSubmit(criarPerfil)}>
         <StyledTextButton>Atualizar perfil</StyledTextButton>
-      </StyledButton>
+      </Button>
     </UpdateContainer>
   );
 }

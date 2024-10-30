@@ -7,13 +7,6 @@ export const LoginContainer = styled.View`
   justify-content: center;
 `;
 
-export const Title = styled.Text`
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #ea8720;
-  font-weight: bold;
-`;
-
 export const StyledTextInput = styled.TextInput<{ hasError?: boolean }>`
   width: 80%;
   border-bottom-width: 1px;

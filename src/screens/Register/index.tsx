@@ -27,12 +27,15 @@ import { ImagePickerResult } from "expo-image-picker";
 import { api } from "../../service/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ArrowLeft, Camera } from "phosphor-react-native";
+import Button from "../../Components/Button";
+import Tittle from "../../Components/Tittle";
+import Toast from "react-native-toast-message";
 
 type FormDataProps = {
   nome: string;
   email: string;
   dataNascimento: string;
-  arquivo: string;
+  foto: string;
   nomeSocial: string;
   telefone: string;
   redeSocial: string;
@@ -90,7 +93,7 @@ export default function Register() {
       if (selectedFileUri) {
         console.log("Imagem selecionada:", selectedFileUri);
         setSelectedFile(selectedFileUri);
-        setValue("arquivo", selectedFileUri);
+        setValue("foto", selectedFileUri);
       } else {
         console.log("A URI da imagem não foi encontrada.");
       }
@@ -131,7 +134,7 @@ export default function Register() {
         const uriParts = selectedFile.split(".");
         const fileType = uriParts[uriParts.length - 1];
 
-        formData.append("arquivo", {
+        formData.append("foto", {
           uri: selectedFile,
           name: `image.${fileType}`,
           type: `image/${fileType}`,
@@ -153,21 +156,27 @@ export default function Register() {
         },
       });
 
-      alert("Perfil criado com sucesso!");
+      Toast.show({
+        type: "success",
+        text1: "Sucesso!",
+        text2: "Perfil criado com sucesso!",
+        visibilityTime: 1700,
+      });
       navigation.navigate("Home");
     } catch (error) {
-      console.error("Erro ao criar perfil:", error);
-      alert(
-        "Erro ao criar perfil: " +
-          (error.response?.data?.message || error.message)
-      );
+      Toast.show({
+        type: "error",
+        text1: "Erro!",
+        text2: "Erro ao criar perfil!",
+        visibilityTime: 1700,
+      });
     }
   };
 
   return (
     <RegisterContainer>
       <RegisterHeader>
-        <Title>Novo Perfil</Title>
+        <Tittle>Novo Perfil</Tittle>
         <GoBackButton onPress={() => navigation.navigate("Home")}>
           <ArrowLeft size={26} color="#ea8720" />
         </GoBackButton>
@@ -273,18 +282,18 @@ export default function Register() {
 
       <ImgPresable onPress={handleImagePicker}>
         <StyledImageInput editable={false} />
-        <Camera size={32} color="#ea8720" />
+
+        {selectedFile ? (
+          <ImgContainer>
+            <ImageView source={{ uri: selectedFile }} />
+          </ImgContainer>
+        ) : (
+          <Camera size={32} color="#ea8720" />
+        )}
       </ImgPresable>
-
-      {selectedFile && (
-        <ImgContainer>
-          <ImageView source={{ uri: selectedFile }} />
-        </ImgContainer>
-      )}
-
-      <StyledButton onPress={handleSubmit(criarPerfil)}>
+      <Button onPress={handleSubmit(criarPerfil)}>
         <StyledTextButton>Criar novo perfil</StyledTextButton>
-      </StyledButton>
+      </Button>
     </RegisterContainer>
   );
 }

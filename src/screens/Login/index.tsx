@@ -1,8 +1,6 @@
 import {
   LoginContainer,
-  StyledButton,
   StyledTextInput,
-  Title,
   ErrorMessage,
   StyledTextButton,
 } from "./styles";
@@ -14,6 +12,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import { api } from "../../service/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Button from "../../Components/Button";
+import Tittle from "../../Components/Tittle";
+import Toast from "react-native-toast-message";
+import axios from "axios";
 
 type FormDataProps = {
   nome: string;
@@ -51,7 +53,12 @@ export default function Login() {
       if (token) {
         await AsyncStorage.setItem("token", token);
         console.log("Token recebido:", token);
-        alert("Usuário logado com sucesso!");
+        Toast.show({
+          type: "success",
+          text1: "Sucesso!",
+          text2: "Usuario logado com sucesso!",
+          visibilityTime: 1700,
+        });
 
         navigation.navigate("Home");
       } else {
@@ -59,18 +66,19 @@ export default function Login() {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error("Erro de rede:", error.message);
-        alert("Erro de rede: " + error.message);
-      } else {
-        console.error("Erro inesperado:", error);
-        alert("Erro inesperado: " + error.message);
+        Toast.show({
+          type: "error",
+          text1: "Erro!",
+          text2: "Credenciais inválidas!",
+          visibilityTime: 1700,
+        });
       }
     }
   }
 
   return (
     <LoginContainer>
-      <Title>Login</Title>
+      <Tittle>Login</Tittle>
 
       <Controller
         control={control}
@@ -125,9 +133,9 @@ export default function Login() {
         )}
       />
 
-      <StyledButton onPress={handleSubmit(handleLogin)}>
+      <Button onPress={handleSubmit(handleLogin)}>
         <StyledTextButton>Entrar</StyledTextButton>
-      </StyledButton>
+      </Button>
     </LoginContainer>
   );
 }
