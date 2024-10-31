@@ -1,6 +1,7 @@
 import { Text } from "react-native";
 import {
   GoBackButton,
+  SpecificName,
   SpecificPerfilCardContainer,
   SpecificPerfilHeader,
   Title,
@@ -61,12 +62,10 @@ export default function SpecificUser() {
   return (
     <SpecificPerfilCardContainer>
       <SpecificPerfilHeader>
-        <Title>
-          Perfil: {"\n"}
-          {specificPerfil.nome}{" "}
-        </Title>
+        <Title>Perfil: </Title>
+        <SpecificName>{specificPerfil.nome}</SpecificName>
         <GoBackButton onPress={() => navigation.navigate("Home")}>
-          <ArrowLeft size={26} color="#ea8720" />
+          <ArrowLeft size={26} color="#349c98" />
         </GoBackButton>
       </SpecificPerfilHeader>
       <PerfilCard perfil={specificPerfil} />

@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 
 export const RegisterContainer = styled.View`
   height: 100%;
-  background-color: #ece8cb;
+  background-color: #edf3f2;
   align-items: center;
   justify-content: center;
 `;
@@ -23,10 +23,11 @@ export const GoBackButton = styled.TouchableOpacity`
 export const StyledTextInput = styled.TextInput`
   width: 80%;
   border-bottom-width: 1px;
-  border-bottom-color: #ea8720;
-  color: #ea8720;
+  border-bottom-color: #9d9c9a;
+  color: #349c98;
   padding: 10px;
   margin-bottom: 15px;
+
 `;
 
 export const DateInput = styled.Pressable`
@@ -41,7 +42,7 @@ export const ErrorMessage = styled.Text`
 
 export const StyledButton = styled.TouchableOpacity`
   margin-top: 30px;
-  background-color: #ea8720;
+  background-color: #349c98;
   padding: 20px 60px 20px 60px;
   border-radius: 6px;
 `;
@@ -72,5 +73,5 @@ export const ImageView = styled.Image`
   margin-top: 10px;
   border-radius: 10px;
   border-width: 1.5px;
-  border-color: #ea8720;
+  border-color: #349c98;
 `;

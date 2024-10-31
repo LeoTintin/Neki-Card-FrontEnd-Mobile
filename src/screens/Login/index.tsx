@@ -3,6 +3,8 @@ import {
   StyledTextInput,
   ErrorMessage,
   StyledTextButton,
+  InputIcon,
+  InputWrapper,
 } from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../routes/Router";
@@ -16,6 +18,8 @@ import Button from "../../Components/Button";
 import Tittle from "../../Components/Tittle";
 import Toast from "react-native-toast-message";
 import axios from "axios";
+import { EnvelopeSimple, Eye, EyeClosed } from "phosphor-react-native";
+import { useState } from "react";
 
 type FormDataProps = {
   nome: string;
@@ -24,7 +28,6 @@ type FormDataProps = {
 };
 
 const LoginFormSchema = yup.object().shape({
-  nome: yup.string().required("Nome é obrigatório"),
   email: yup
     .string()
     .email("Formato inválido")
@@ -35,8 +38,7 @@ const LoginFormSchema = yup.object().shape({
       (email) => {
         return (
           typeof email === "string" &&
-          (email.endsWith("@neki-it.com.br") ||
-            email.endsWith("@neki.com.br"))
+          (email.endsWith("@neki-it.com.br") || email.endsWith("@neki.com.br"))
         );
       }
     ),
@@ -50,6 +52,11 @@ type LoginNavigationProp = NativeStackNavigationProp<
 
 export default function Login() {
   const navigation = useNavigation<LoginNavigationProp>();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword((prevState) => !prevState);
+  };
 
   const {
     control,
@@ -96,31 +103,20 @@ export default function Login() {
 
       <Controller
         control={control}
-        name="nome"
-        render={({ field: { onChange, value } }) => (
-          <>
-            <StyledTextInput
-              placeholder="Nome"
-              onChangeText={onChange}
-              value={value}
-              hasError={!!errors.nome}
-            />
-            {errors.nome && <ErrorMessage>{errors.nome.message}</ErrorMessage>}
-          </>
-        )}
-      />
-
-      <Controller
-        control={control}
         name="email"
         render={({ field: { onChange, value } }) => (
           <>
-            <StyledTextInput
-              placeholder="E-mail"
-              onChangeText={onChange}
-              value={value}
-              hasError={!!errors.email}
-            />
+            <InputWrapper>
+              <StyledTextInput
+                placeholder="E-mail"
+                onChangeText={onChange}
+                value={value}
+                hasError={!!errors.email}
+              />
+              <InputIcon>
+                <EnvelopeSimple size={24} color="#9d9c9a" />
+              </InputIcon>
+            </InputWrapper>
             {errors.email && (
               <ErrorMessage>{errors.email.message}</ErrorMessage>
             )}
@@ -133,13 +129,22 @@ export default function Login() {
         name="senha"
         render={({ field: { onChange, value } }) => (
           <>
-            <StyledTextInput
-              placeholder="Senha"
-              onChangeText={onChange}
-              value={value}
-              secureTextEntry
-              hasError={!!errors.senha}
-            />
+            <InputWrapper>
+              <StyledTextInput
+                placeholder="Senha"
+                onChangeText={onChange}
+                value={value}
+                secureTextEntry={!showPassword}
+                hasError={!!errors.senha}
+              />
+              <InputIcon onPress={toggleShowPassword}>
+                {showPassword ? (
+                  <EyeClosed size={24} color="#9d9c9a" />
+                ) : (
+                  <Eye size={24} color="#9d9c9a" />
+                )}
+              </InputIcon>
+            </InputWrapper>
             {errors.senha && (
               <ErrorMessage>{errors.senha.message}</ErrorMessage>
             )}

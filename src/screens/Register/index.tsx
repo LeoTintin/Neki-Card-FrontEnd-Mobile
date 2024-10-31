@@ -55,7 +55,7 @@ const RegisterFormSchema = yup.object().shape({
         );
       }
     ),
-  dataNascimento: yup.string().required("Insira uma data de nascimento"),
+  dataNascimento: yup.string().required("Data de nascimento é obrigatória"),
 
   nomeSocial: yup.string().optional(),
   telefone: yup.string().optional(),
@@ -189,7 +189,7 @@ export default function Register() {
       <RegisterHeader>
         <Tittle>Novo Perfil</Tittle>
         <GoBackButton onPress={() => navigation.navigate("Home")}>
-          <ArrowLeft size={26} color="#ea8720" />
+          <ArrowLeft size={26} color="#349c98" />
         </GoBackButton>
       </RegisterHeader>
 
@@ -203,6 +203,7 @@ export default function Register() {
               onChangeText={onChange}
               value={value}
               hasError={!!errors.nome}
+              placeholderTextColor={"#349c98"}
             />
             {errors.nome && <ErrorMessage>{errors.nome.message}</ErrorMessage>}
           </>
@@ -217,6 +218,7 @@ export default function Register() {
             placeholder="Nome Social"
             onChangeText={onChange}
             value={value}
+            placeholderTextColor={"#349c98"}
           />
         )}
       />
@@ -231,6 +233,7 @@ export default function Register() {
               onChangeText={onChange}
               value={value}
               hasError={!!errors.email}
+              placeholderTextColor={"#349c98"}
             />
             {errors.email && (
               <ErrorMessage>{errors.email.message}</ErrorMessage>
@@ -250,6 +253,7 @@ export default function Register() {
                 value={value}
                 hasError={!!errors.dataNascimento}
                 editable={false}
+                placeholderTextColor={"#349c98"}
               />
               {errors.dataNascimento && (
                 <ErrorMessage>{errors.dataNascimento.message}</ErrorMessage>
@@ -276,6 +280,7 @@ export default function Register() {
             placeholder="Numero de telefone"
             onChangeText={onChange}
             value={value}
+            placeholderTextColor={"#349c98"}
           />
         )}
       />
@@ -287,6 +292,7 @@ export default function Register() {
             placeholder="Rede Social"
             onChangeText={onChange}
             value={value}
+            placeholderTextColor={"#349c98"}
           />
         )}
       />
@@ -299,7 +305,7 @@ export default function Register() {
             <ImageView source={{ uri: selectedFile }} />
           </ImgContainer>
         ) : (
-          <Camera size={32} color="#ea8720" />
+          <Camera size={32} color="#349c98" />
         )}
       </ImgPresable>
       <Button onPress={handleSubmit(criarPerfil)}>

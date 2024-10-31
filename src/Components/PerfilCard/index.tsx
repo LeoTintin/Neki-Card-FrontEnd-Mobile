@@ -133,14 +133,14 @@ export default function PerfilCard({ perfil, refetch }) {
           onPressOut={() => setIsPressed(false)}
           onPress={() => navigation.navigate("Update", { perfilId: perfil.id })}
         >
-          <NotePencil size={26} color="#ea8720" />
+          <NotePencil size={26} color="#349c98" />
         </PerfilCardButton>
         <PerfilCardButton
           onPressIn={() => setIsPressed(true)}
           onPressOut={() => setIsPressed(false)}
           onPress={() => handleDelete(perfil.id)}
         >
-          <Trash size={26} color="#ea8720" />
+          <Trash size={26} color="#349c98" />
         </PerfilCardButton>
       </ButtonsContainer>
     </PerfilCardContainer>

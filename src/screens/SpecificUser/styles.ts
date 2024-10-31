@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 
 export const SpecificPerfilCardContainer = styled.View`
   height: 100%;
-  background-color: #deddc2;
+  background-color: #edf3f2;
   align-items: center;
 `;
 
@@ -17,16 +17,21 @@ export const SpecificPerfilHeader = styled.View`
 
 export const Title = styled.Text`
   font-size: 24px;
-  color: #ea8720;
+  color: #349c98;
   font-weight: bold;
   margin-top: 10px;
   letter-spacing: 1px;
 `;
 
+
+
 export const SpecificName = styled.Text`
   font-size: 24px;
   color: #403937;
   font-weight: bold;
+  letter-spacing: 1px;
+  margin-right: auto;
+  margin-top: 10px;
 `;
 
 export const GoBackButton = styled.TouchableOpacity`

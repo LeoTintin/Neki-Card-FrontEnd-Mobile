@@ -2,27 +2,44 @@ import styled from "styled-components/native";
 
 export const LoadingHome = styled.ActivityIndicator`
   height: 100%;
-  background-color: #deddc2;
+  background-color: #edf3f2;
 `;
 
 export const HomeView = styled.View`
   height: 100%;
-  background-color: #deddc2;
+  background-color: #edf3f2;
 `;
 
 export const HomeContainer = styled.View`
   align-items: center;
   justify-content: center;
+  background-color: #edf3f2;
+`;
+
+export const NotFoundContainer = styled.View`
+  align-items: center;
+  justify-content: center;
+  background-color: #edf3f2;
+  padding-bottom: 117.45%;
+`;
+
+export const SearchWrapper = styled.View`
+  flex-direction: row;
+  align-items: center;
+  border-bottom-width: 1px;
+  border-bottom-color: #349c98;
+  margin-bottom: 10px;
+`;
+
+export const SearchIcon = styled.View`
+  margin-right: 10px;
 `;
 
 export const SearchInput = styled.TextInput`
   width: 60%;
-  border-bottom-width: 1px;
-  border-bottom-color: #ea8720;
   color: #403937;
   font-weight: 700;
   padding: 10px;
-  margin-bottom: 15px;
   letter-spacing: 1px;
 `;
 

@@ -6,6 +6,9 @@ import {
   HomeButtonText,
   LoadingHome,
   SearchInput,
+  NotFoundContainer,
+  SearchWrapper,
+  SearchIcon,
 } from "./styles";
 import PerfilCard from "../../Components/PerfilCard";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -15,6 +18,8 @@ import { api } from "../../service/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../../Components/Button";
 import Tittle from "../../Components/Tittle";
+import { MagnifyingGlass } from "phosphor-react-native";
+import { View } from "react-native";
 
 type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 
@@ -72,22 +77,46 @@ export default function Home() {
   };
 
   if (loading) {
-    return <LoadingHome size="large" color="#ea8720" />;
+    return <LoadingHome size="large" color="#349c98" />;
   }
 
   const renderItem = ({ item }) => (
     <PerfilCard perfil={item} refetch={fetchPerfils} />
   );
 
+  if (filteredPerfils.length <= 0) {
+    return (
+      <NotFoundContainer>
+        <Tittle>Perfis</Tittle>
+        <SearchWrapper>
+          <SearchInput
+            placeholder="Pesquisar perfil"
+            value={searchQuery}
+            onChangeText={handleSearch}
+          />
+          <SearchIcon>
+            <MagnifyingGlass size={22} color="#9d9c9a" />
+          </SearchIcon>
+        </SearchWrapper>
+        <Tittle>Nenhum perfil encontrado</Tittle>
+      </NotFoundContainer>
+    );
+  }
+
   return (
     <HomeView>
       <HomeContainer>
-        <Tittle>Perfil</Tittle>
-        <SearchInput
-          placeholder="Pesquisar perfil"
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
+        <Tittle>Perfis</Tittle>
+        <SearchWrapper>
+          <SearchInput
+            placeholder="Pesquisar perfil"
+            value={searchQuery}
+            onChangeText={handleSearch}
+          />
+          <SearchIcon>
+            <MagnifyingGlass size={22} color="#9d9c9a" />
+          </SearchIcon>
+        </SearchWrapper>
         <PefilList
           data={filteredPerfils}
           renderItem={renderItem}

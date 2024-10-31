@@ -1,8 +1,6 @@
 import { Platform } from "react-native";
 import {
-  StyledButton,
   StyledTextInput,
-  Title,
   ErrorMessage,
   DateInput,
   UpdateContainer,
@@ -227,7 +225,7 @@ export default function UpdatePerfil() {
       <UpdateHeader>
         <Tittle>Atualizar perfil</Tittle>
         <GoBackButton onPress={() => navigation.navigate("Home")}>
-          <ArrowLeft size={26} color="#ea8720" />
+          <ArrowLeft size={26} color="#349c98" />
         </GoBackButton>
       </UpdateHeader>
 
@@ -241,6 +239,7 @@ export default function UpdatePerfil() {
               onChangeText={onChange}
               value={value}
               hasError={!!errors.nome}
+              placeholderTextColor={"#349c98"}
             />
             {errors.nome && <ErrorMessage>{errors.nome.message}</ErrorMessage>}
           </>
@@ -255,6 +254,7 @@ export default function UpdatePerfil() {
             placeholder="Nome Social"
             onChangeText={onChange}
             value={value}
+            placeholderTextColor={"#349c98"}
           />
         )}
       />
@@ -269,6 +269,7 @@ export default function UpdatePerfil() {
               onChangeText={onChange}
               value={value}
               hasError={!!errors.email}
+              placeholderTextColor={"#349c98"}
             />
             {errors.email && (
               <ErrorMessage>{errors.email.message}</ErrorMessage>
@@ -288,6 +289,7 @@ export default function UpdatePerfil() {
                 value={value}
                 hasError={!!errors.dataNascimento}
                 editable={false}
+                placeholderTextColor={"#349c98"}
               />
               {errors.dataNascimento && (
                 <ErrorMessage>{errors.dataNascimento.message}</ErrorMessage>
@@ -314,6 +316,7 @@ export default function UpdatePerfil() {
             placeholder="Numero de telefone"
             onChangeText={onChange}
             value={value}
+            placeholderTextColor={"#349c98"}
           />
         )}
       />
@@ -325,6 +328,7 @@ export default function UpdatePerfil() {
             placeholder="Rede Social"
             onChangeText={onChange}
             value={value}
+            placeholderTextColor={"#349c98"}
           />
         )}
       />
@@ -337,7 +341,7 @@ export default function UpdatePerfil() {
             <ImageView source={{ uri: selectedFile }} />
           </ImgContainer>
         ) : (
-          <Camera size={32} color="#ea8720" />
+          <Camera size={32} color="#349c98" />
         )}
       </ImgPresable>
 

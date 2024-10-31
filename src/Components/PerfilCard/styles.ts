@@ -3,21 +3,23 @@ import styled from "styled-components/native";
 export const PerfilCardContainer = styled.View`
   width: 100%;
   max-width: 300px;
-  background-color: #ece8cb;
+  background-color: #fff;
   border-radius: 6px 36px 36px 36px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  border: 1px solid #ea8720;
+  border: 1px solid #349c98;
   position: relative;
   box-sizing: border-box;
   margin: 10px 30px 10px 30px;
 `;
 
 export const ProfileIdButton = styled.TouchableOpacity`
-  background-color: #ea8720;
+  background-color: #fff;
+  border-width: 1px;
+  border-color: #349c98;
   border-radius: 20px;
   margin-right: auto;
   position: absolute;
@@ -26,10 +28,10 @@ export const ProfileIdButton = styled.TouchableOpacity`
 `;
 
 export const ProfileID = styled.Text`
-  color: #ece8cb;
+  color: #349c98;
   font-size: 13px;
   font-weight: bold;
-  padding: 8px;
+  padding: 10px;
 `;
 
 export const ProfileImage = styled.Image`
@@ -47,7 +49,7 @@ export const PerfilEmail = styled.View`
   gap: 4px;
   margin-top: 12px;
   flex-wrap: wrap;
-  background-color: #ea8720;
+  background-color: #349c98;
   padding: 4px 8px;
   border-radius: 999px;
   max-width: 100%;
@@ -55,7 +57,7 @@ export const PerfilEmail = styled.View`
 `;
 
 export const PerfilEmailText = styled.Text`
-  color: #ece8cb;
+  color: #fff;
   font-size: 12px;
   font-weight: 700;
 `;
@@ -94,7 +96,7 @@ export const RedeSocial = styled.Text`
   font-size: 16px;
   margin: 1px;
   max-width: 100%;
-  color: #ea8720;
+  color: #349c98;
 `;
 
 export const ButtonsContainer = styled.View`
