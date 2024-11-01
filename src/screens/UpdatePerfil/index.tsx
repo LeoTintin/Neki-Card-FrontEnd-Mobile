@@ -1,27 +1,29 @@
 import { Platform } from "react-native";
-
 import {
   StyledTextInput,
   ErrorMessage,
   DateInput,
-  StyledTextButton,
-  RegisterContainer,
-  RegisterHeader,
+  UpdateContainer,
+  UpdateHeader,
   GoBackButton,
+  StyledTextButton,
   ImgPresable,
+  StyledImageInput,
   ImgContainer,
   ImageView,
-  StyledImageInput,
 } from "./styles";
-
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../routes/Router";
-import { useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { ImagePickerResult } from "expo-image-picker";
 import { api } from "../../service/api";
@@ -30,7 +32,6 @@ import { ArrowLeft, Camera } from "phosphor-react-native";
 import Button from "../../Components/Button";
 import Tittle from "../../Components/Tittle";
 import Toast from "react-native-toast-message";
-import { AxiosError } from "axios";
 
 type FormDataProps = {
   nome: string;
@@ -42,7 +43,7 @@ type FormDataProps = {
   redeSocial: string;
 };
 
-const RegisterFormSchema = yup.object().shape({
+const UpdateFormSchema = yup.object().shape({
   nome: yup.string().required("Nome é obrigatório"),
   email: yup
     .string()
@@ -58,21 +59,19 @@ const RegisterFormSchema = yup.object().shape({
         );
       }
     ),
-
-  dataNascimento: yup.string().required("Data de nascimento é obrigatória"),
+  dataNascimento: yup.string().required("Insira uma data de nascimento"),
 
   nomeSocial: yup.string().optional(),
   telefone: yup.string().optional(),
   redeSocial: yup.string().optional(),
 });
 
-type RegisterNavigation = NativeStackNavigationProp<
-  RootStackParamList,
-  "Register"
->;
+type UpdateNavigation = NativeStackNavigationProp<RootStackParamList, "Update">;
 
-export default function Register() {
-  const navigation = useNavigation<RegisterNavigation>();
+export default function UpdatePerfil() {
+  const navigation = useNavigation<UpdateNavigation>();
+  const route = useRoute();
+  const { perfilId } = route.params;
 
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
@@ -89,6 +88,7 @@ export default function Register() {
   const emailRef = useRef<any>(null);
   const telefoneRef = useRef<any>(null);
   const redeSocialRef = useRef<any>(null);
+  const dataNascimentoRef = useRef<any>(null);
 
   const toggleDatePicker = () => {
     setShowPicker(!showPicker);
@@ -100,8 +100,44 @@ export default function Register() {
     setValue,
     formState: { errors },
   } = useForm<FormDataProps>({
-    resolver: yupResolver(RegisterFormSchema),
+    resolver: yupResolver(UpdateFormSchema),
   });
+
+  const loadProfileData = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        alert("Token não encontrado.Faça login novamente");
+        return;
+      }
+      const response = await api.get(`/perfil/${perfilId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response.data;
+      setValue("nome", data.nome);
+      setValue("email", data.email);
+      setValue("nomeSocial", data.nomeSocial);
+      setValue("dataNascimento", data.dataNascimento);
+      setValue("telefone", data.telefone);
+      setValue("redeSocial", data.redeSocial);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Erro!",
+        text2: "Erro ao carregar perfil!",
+        visibilityTime: 1700,
+      });
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadProfileData();
+    }, [])
+  );
 
   const handleImagePicker = async () => {
     const permissionResult =
@@ -117,25 +153,10 @@ export default function Register() {
 
     if (!result.canceled) {
       const selectedFileUri = result.assets[0]?.uri;
-
       if (selectedFileUri) {
         setSelectedFile(selectedFileUri);
         setValue("foto", selectedFileUri);
-      } else {
-        Toast.show({
-          type: "error",
-          text1: "Erro!",
-          text2: "Seleção de imagem cancelada",
-          visibilityTime: 1700,
-        });
       }
-    } else {
-      Toast.show({
-        type: "error",
-        text1: "Erro!",
-        text2: "Seleção de imagem cancelada",
-        visibilityTime: 1700,
-      });
     }
   };
 
@@ -148,9 +169,7 @@ export default function Register() {
         toggleDatePicker();
       }
 
-      const adjustedDate = new Date(currentDate);
-      adjustedDate.setUTCHours(0, 0, 0, 0);
-      const formattedDate = adjustedDate.toISOString().split("T")[0];
+      const formattedDate = currentDate.toISOString().split("T")[0];
       setValue("dataNascimento", formattedDate);
     } else {
       toggleDatePicker();
@@ -178,15 +197,6 @@ export default function Register() {
         });
       }
 
-      if (!selectedFile) {
-        Toast.show({
-          type: "error",
-          text1: "Erro!",
-          text2: "Selecione uma imagem",
-        });
-        return;
-      }
-
       const token = await AsyncStorage.getItem("token");
 
       if (!token) {
@@ -194,7 +204,7 @@ export default function Register() {
         return;
       }
 
-      const response = await api.post("/perfil", formData, {
+      const response = await api.put(`/perfil/${perfilId}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -204,39 +214,28 @@ export default function Register() {
       Toast.show({
         type: "success",
         text1: "Sucesso!",
-        text2: "Perfil criado com sucesso!",
+        text2: "Perfil atualizado com sucesso!",
         visibilityTime: 1700,
       });
-      navigation.navigate("Home");
+      navigation.navigate("Home", { updated: true });
     } catch (error) {
-      const axiosError = error as AxiosError;
-
-      if (axiosError.response && axiosError.response.status === 409) {
-        Toast.show({
-          type: "error",
-          text1: "Erro!",
-          text2: "Este e-mail já está em uso!",
-          visibilityTime: 1700,
-        });
-      } else {
-        Toast.show({
-          type: "error",
-          text1: "Erro!",
-          text2: "Erro ao criar perfil!",
-          visibilityTime: 1700,
-        });
-      }
+      Toast.show({
+        type: "error",
+        text1: "Erro!",
+        text2: "Erro ao atualizar perfil!",
+        visibilityTime: 1700,
+      });
     }
   };
 
   return (
-    <RegisterContainer>
-      <RegisterHeader>
-        <Tittle>Novo Perfil</Tittle>
+    <UpdateContainer>
+      <UpdateHeader>
+        <Tittle>Atualizar perfil</Tittle>
         <GoBackButton onPress={() => navigation.navigate("Home")}>
           <ArrowLeft size={26} color="#349c98" />
         </GoBackButton>
-      </RegisterHeader>
+      </UpdateHeader>
 
       <Controller
         control={control}
@@ -295,7 +294,7 @@ export default function Register() {
               onBlur={() => setIsFocusedEmail(false)}
               hasError={!!errors.email}
               placeholderTextColor={"#349c98"}
-              returnKeyType="next"
+              onSubmitEditing={() => dataNascimentoRef.current.focus()}
             />
             {errors.email && (
               <ErrorMessage>{errors.email.message}</ErrorMessage>
@@ -311,12 +310,12 @@ export default function Register() {
           render={({ field: { value } }) => (
             <>
               <StyledTextInput
+                ref={dataNascimentoRef}
                 placeholder="Data de nascimento:  DD/MM/YYYY"
                 value={value}
                 hasError={!!errors.dataNascimento}
-                placeholderTextColor={"#349c98"}
-                returnKeyType="next"
                 editable={false}
+                placeholderTextColor={"#349c98"}
               />
               {errors.dataNascimento && (
                 <ErrorMessage>{errors.dataNascimento.message}</ErrorMessage>
@@ -381,9 +380,10 @@ export default function Register() {
           <Camera size={32} color="#349c98" />
         )}
       </ImgPresable>
+
       <Button onPress={handleSubmit(criarPerfil)}>
-        <StyledTextButton>Criar novo perfil</StyledTextButton>
+        <StyledTextButton>Atualizar perfil</StyledTextButton>
       </Button>
-    </RegisterContainer>
+    </UpdateContainer>
   );
 }

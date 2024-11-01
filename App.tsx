@@ -1,12 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Login from './src/screens/Login';
-import Register from './src/screens/Register';
+import { StatusBar } from "expo-status-bar";
+import { View } from "react-native";
+import Routes from "./src/routes";
+import Toast from "react-native-toast-message";
 
 export default function App() {
   return (
-    < View>
-      <Register/>
+    <View style={{ flex: 1, backgroundColor:"#edf3f2"}}>
+      <Routes />
+      <StatusBar />
+      <Toast />
     </View>
   );
 }

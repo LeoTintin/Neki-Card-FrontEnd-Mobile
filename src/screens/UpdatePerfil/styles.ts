@@ -1,13 +1,13 @@
 import styled from "styled-components/native";
 
-export const RegisterContainer = styled.View`
+export const UpdateContainer = styled.View`
   height: 100%;
   background-color: #edf3f2;
   align-items: center;
   justify-content: center;
 `;
 
-export const RegisterHeader = styled.View`
+export const UpdateHeader = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -29,7 +29,6 @@ export const StyledTextInput = styled.TextInput<{ isFocused?: boolean }>`
   padding: 10px;
   margin-bottom: 15px;
 `;
-
 export const DateInput = styled.Pressable`
   width: 100%;
   align-items: center;
@@ -38,13 +37,6 @@ export const DateInput = styled.Pressable`
 export const ErrorMessage = styled.Text`
   color: red;
   margin-bottom: 15px;
-`;
-
-export const StyledButton = styled.TouchableOpacity`
-  margin-top: 30px;
-  background-color: #349c98;
-  padding: 20px 60px 20px 60px;
-  border-radius: 6px;
 `;
 
 export const StyledTextButton = styled.Text`
