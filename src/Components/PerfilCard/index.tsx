@@ -79,7 +79,7 @@ export default function PerfilCard({ perfil, refetch }) {
                 text2: "Perfil excluido com sucesso!",
                 visibilityTime: 1700,
               });
-              refetch();
+              navigation.navigate("Home");
             } catch (error) {
               Toast.show({
                 type: "error",
@@ -88,6 +88,7 @@ export default function PerfilCard({ perfil, refetch }) {
                 visibilityTime: 1700,
               });
             }
+            refetch();
           },
         },
       ],

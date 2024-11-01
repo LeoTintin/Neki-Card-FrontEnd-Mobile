@@ -7,11 +7,12 @@ export const LoginContainer = styled.View`
   justify-content: center;
 `;
 
-export const InputWrapper = styled.View<{ hasError?: boolean }>`
+export const InputWrapper = styled.View<{ isFocused?: boolean }>`
   flex-direction: row;
   align-items: center;
   border-bottom-width: 1px;
-  border-bottom-color: ${({ hasError }) => (hasError ? "red" : "#349c98")};
+  border-bottom-color: ${({ isFocused }) =>
+    isFocused ? "#349c98" : "#9d9c9a"};
   margin-bottom: 10px;
 `;
 

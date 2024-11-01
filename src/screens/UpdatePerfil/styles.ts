@@ -20,15 +20,15 @@ export const GoBackButton = styled.TouchableOpacity`
   border: none;
 `;
 
-export const StyledTextInput = styled.TextInput`
+export const StyledTextInput = styled.TextInput<{ isFocused?: boolean }>`
   width: 80%;
   border-bottom-width: 1px;
-  border-bottom-color: #9d9c9a;
+  border-bottom-color: ${({ isFocused }) =>
+    isFocused ? "#349c98" : "#9d9c9a"};
   color: #349c98;
   padding: 10px;
   margin-bottom: 15px;
 `;
-
 export const DateInput = styled.Pressable`
   width: 100%;
   align-items: center;

@@ -25,11 +25,16 @@ export const ProfileIdButton = styled.TouchableOpacity`
   position: absolute;
   top: -10px;
   left: -10px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const ProfileID = styled.Text`
   color: #349c98;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: bold;
   padding: 10px;
 `;

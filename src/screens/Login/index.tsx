@@ -1,3 +1,5 @@
+import React, { useState, useRef } from "react";
+
 import {
   LoginContainer,
   StyledTextInput,
@@ -6,6 +8,7 @@ import {
   InputIcon,
   InputWrapper,
 } from "./styles";
+
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../routes/Router";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -19,7 +22,6 @@ import Tittle from "../../Components/Tittle";
 import Toast from "react-native-toast-message";
 import axios from "axios";
 import { EnvelopeSimple, Eye, EyeClosed } from "phosphor-react-native";
-import { useState } from "react";
 
 type FormDataProps = {
   nome: string;
@@ -28,6 +30,7 @@ type FormDataProps = {
 };
 
 const LoginFormSchema = yup.object().shape({
+
   email: yup
     .string()
     .email("Formato inválido")
@@ -43,6 +46,7 @@ const LoginFormSchema = yup.object().shape({
       }
     ),
   senha: yup.string().required("Senha é obrigatória"),
+
 });
 
 type LoginNavigationProp = NativeStackNavigationProp<
@@ -51,8 +55,14 @@ type LoginNavigationProp = NativeStackNavigationProp<
 >;
 
 export default function Login() {
+
   const navigation = useNavigation<LoginNavigationProp>();
   const [showPassword, setShowPassword] = useState(false);
+
+  const [isFocusedEmail, setIsFocusedEmail] = useState(false);
+  const [isFocusedSenha, setIsFocusedPassword] = useState(false);
+
+  const senhaRef = useRef<any>(null);
 
   const toggleShowPassword = () => {
     setShowPassword((prevState) => !prevState);
@@ -67,13 +77,13 @@ export default function Login() {
   });
 
   async function handleLogin(data: FormDataProps) {
+
     try {
       const response = await api.post("/auth/login", data);
       const token = response.data.token;
 
       if (token) {
         await AsyncStorage.setItem("token", token);
-        console.log("Token recebido:", token);
         Toast.show({
           type: "success",
           text1: "Sucesso!",
@@ -98,6 +108,7 @@ export default function Login() {
   }
 
   return (
+
     <LoginContainer>
       <Tittle>Login</Tittle>
 
@@ -106,13 +117,18 @@ export default function Login() {
         name="email"
         render={({ field: { onChange, value } }) => (
           <>
-            <InputWrapper>
+            <InputWrapper isFocused={isFocusedEmail}>
               <StyledTextInput
                 placeholder="E-mail"
                 onChangeText={onChange}
                 value={value}
+                onFocus={() => setIsFocusedEmail(true)}
+                onBlur={() => setIsFocusedEmail(false)}
                 hasError={!!errors.email}
+                returnKeyType="next"
+                onSubmitEditing={() => senhaRef.current.focus()}
               />
+
               <InputIcon>
                 <EnvelopeSimple size={24} color="#9d9c9a" />
               </InputIcon>
@@ -129,14 +145,21 @@ export default function Login() {
         name="senha"
         render={({ field: { onChange, value } }) => (
           <>
-            <InputWrapper>
+
+            <InputWrapper isFocused={isFocusedSenha}>
               <StyledTextInput
+                ref={senhaRef}
                 placeholder="Senha"
                 onChangeText={onChange}
                 value={value}
+                onFocus={() => setIsFocusedPassword(true)}
+                onBlur={() => setIsFocusedPassword(false)}
                 secureTextEntry={!showPassword}
                 hasError={!!errors.senha}
+                returnKeyType="done"
+                onSubmitEditing={handleSubmit(handleLogin)}
               />
+              
               <InputIcon onPress={toggleShowPassword}>
                 {showPassword ? (
                   <EyeClosed size={24} color="#9d9c9a" />

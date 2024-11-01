@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+
 import {
   StyledTextInput,
   ErrorMessage,
@@ -12,6 +13,7 @@ import {
   ImageView,
   StyledImageInput,
 } from "./styles";
+
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../routes/Router";
 import { useNavigation } from "@react-navigation/native";
@@ -19,7 +21,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { ImagePickerResult } from "expo-image-picker";
 import { api } from "../../service/api";
@@ -28,6 +30,7 @@ import { ArrowLeft, Camera } from "phosphor-react-native";
 import Button from "../../Components/Button";
 import Tittle from "../../Components/Tittle";
 import Toast from "react-native-toast-message";
+import { AxiosError } from "axios";
 
 type FormDataProps = {
   nome: string;
@@ -55,6 +58,7 @@ const RegisterFormSchema = yup.object().shape({
         );
       }
     ),
+
   dataNascimento: yup.string().required("Data de nascimento é obrigatória"),
 
   nomeSocial: yup.string().optional(),
@@ -73,6 +77,18 @@ export default function Register() {
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
+
+  const [isFocusedNome, setIsFocusedNome] = useState(false);
+  const [isFocusedNomeSocial, setIsFocusedNomeSocial] = useState(false);
+  const [isFocusedEmail, setIsFocusedEmail] = useState(false);
+  const [isFocusedTelefone, setIsFocusedTelefone] = useState(false);
+  const [isFocusedRedeSocial, setIsFocusedRedeSocial] = useState(false);
+
+  const nomeRef = useRef<any>(null);
+  const nomeSocialRef = useRef<any>(null);
+  const emailRef = useRef<any>(null);
+  const telefoneRef = useRef<any>(null);
+  const redeSocialRef = useRef<any>(null);
 
   const toggleDatePicker = () => {
     setShowPicker(!showPicker);
@@ -101,15 +117,25 @@ export default function Register() {
 
     if (!result.canceled) {
       const selectedFileUri = result.assets[0]?.uri;
+
       if (selectedFileUri) {
-        console.log("Imagem selecionada:", selectedFileUri);
         setSelectedFile(selectedFileUri);
         setValue("foto", selectedFileUri);
       } else {
-        console.log("A URI da imagem não foi encontrada.");
+        Toast.show({
+          type: "error",
+          text1: "Erro!",
+          text2: "Seleção de imagem cancelada",
+          visibilityTime: 1700,
+        });
       }
     } else {
-      console.log("Seleção de imagem cancelada.");
+      Toast.show({
+        type: "error",
+        text1: "Erro!",
+        text2: "Seleção de imagem cancelada",
+        visibilityTime: 1700,
+      });
     }
   };
 
@@ -152,8 +178,16 @@ export default function Register() {
         });
       }
 
+      if (!selectedFile) {
+        Toast.show({
+          type: "error",
+          text1: "Erro!",
+          text2: "Selecione uma imagem",
+        });
+        return;
+      }
+
       const token = await AsyncStorage.getItem("token");
-      console.log("Token recuperado:", token);
 
       if (!token) {
         alert("Token não encontrado. Faça login novamente.");
@@ -175,12 +209,23 @@ export default function Register() {
       });
       navigation.navigate("Home");
     } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: "Erro!",
-        text2: "Erro ao criar perfil!",
-        visibilityTime: 1700,
-      });
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response && axiosError.response.status === 409) {
+        Toast.show({
+          type: "error",
+          text1: "Erro!",
+          text2: "Este e-mail já está em uso!",
+          visibilityTime: 1700,
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Erro!",
+          text2: "Erro ao criar perfil!",
+          visibilityTime: 1700,
+        });
+      }
     }
   };
 
@@ -199,11 +244,17 @@ export default function Register() {
         render={({ field: { onChange, value } }) => (
           <>
             <StyledTextInput
+              ref={nomeRef}
               placeholder="Nome"
               onChangeText={onChange}
               value={value}
+              isFocused={isFocusedNome}
+              onFocus={() => setIsFocusedNome(true)}
+              onBlur={() => setIsFocusedNome(false)}
               hasError={!!errors.nome}
               placeholderTextColor={"#349c98"}
+              returnKeyType="next"
+              onSubmitEditing={() => nomeSocialRef.current.focus()}
             />
             {errors.nome && <ErrorMessage>{errors.nome.message}</ErrorMessage>}
           </>
@@ -215,10 +266,16 @@ export default function Register() {
         name="nomeSocial"
         render={({ field: { onChange, value } }) => (
           <StyledTextInput
+            ref={nomeSocialRef}
             placeholder="Nome Social"
             onChangeText={onChange}
             value={value}
+            isFocused={isFocusedNomeSocial}
+            onFocus={() => setIsFocusedNomeSocial(true)}
+            onBlur={() => setIsFocusedNomeSocial(false)}
             placeholderTextColor={"#349c98"}
+            returnKeyType="next"
+            onSubmitEditing={() => emailRef.current.focus()}
           />
         )}
       />
@@ -229,11 +286,16 @@ export default function Register() {
         render={({ field: { onChange, value } }) => (
           <>
             <StyledTextInput
+              ref={emailRef}
               placeholder="E-mail"
               onChangeText={onChange}
               value={value}
+              isFocused={isFocusedEmail}
+              onFocus={() => setIsFocusedEmail(true)}
+              onBlur={() => setIsFocusedEmail(false)}
               hasError={!!errors.email}
               placeholderTextColor={"#349c98"}
+              returnKeyType="next"
             />
             {errors.email && (
               <ErrorMessage>{errors.email.message}</ErrorMessage>
@@ -252,8 +314,9 @@ export default function Register() {
                 placeholder="Data de nascimento:  DD/MM/YYYY"
                 value={value}
                 hasError={!!errors.dataNascimento}
-                editable={false}
                 placeholderTextColor={"#349c98"}
+                returnKeyType="next"
+                editable={false}
               />
               {errors.dataNascimento && (
                 <ErrorMessage>{errors.dataNascimento.message}</ErrorMessage>
@@ -277,10 +340,16 @@ export default function Register() {
         name="telefone"
         render={({ field: { onChange, value } }) => (
           <StyledTextInput
+            ref={telefoneRef}
             placeholder="Numero de telefone"
             onChangeText={onChange}
             value={value}
+            isFocused={isFocusedTelefone}
+            onFocus={() => setIsFocusedTelefone(true)}
+            onBlur={() => setIsFocusedTelefone(false)}
             placeholderTextColor={"#349c98"}
+            returnKeyType="next"
+            onSubmitEditing={() => redeSocialRef.current.focus()}
           />
         )}
       />
@@ -289,9 +358,13 @@ export default function Register() {
         name="redeSocial"
         render={({ field: { onChange, value } }) => (
           <StyledTextInput
+            ref={redeSocialRef}
             placeholder="Rede Social"
             onChangeText={onChange}
             value={value}
+            isFocused={isFocusedRedeSocial}
+            onFocus={() => setIsFocusedRedeSocial(true)}
+            onBlur={() => setIsFocusedRedeSocial(false)}
             placeholderTextColor={"#349c98"}
           />
         )}

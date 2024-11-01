@@ -25,36 +25,33 @@ export default function SpecificUser() {
   const route = useRoute();
   const { perfilId } = route.params;
   const [specificPerfil, setSpecificPerfil] = useState(null);
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("pt-BR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
+  const [refresh, setRefresh] = useState(false);
+
+  const fetchPerfil = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+
+      if (!token) {
+        alert("Token não encontrado. Faça login novamente.");
+        return;
+      }
+      const response = await api.get(`/perfil/${perfilId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setSpecificPerfil(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar perfil!", error);
+    }
   };
 
   useEffect(() => {
-    async function fetchPerfil() {
-      try {
-        const token = await AsyncStorage.getItem("token");
-
-        if (!token) {
-          alert("Token não encontrado. Faça login novamente.");
-          return;
-        }
-        const response = await api.get(`/perfil/${perfilId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setSpecificPerfil(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar perfil!", error);
-      }
-    }
     fetchPerfil();
-  }, [perfilId]);
+  }, [perfilId, refresh]);
+
+  const refetch = () => setRefresh((prev) => !prev);
+
   if (!specificPerfil) {
     return <Text>Carregando...</Text>;
   }
@@ -68,7 +65,7 @@ export default function SpecificUser() {
           <ArrowLeft size={26} color="#349c98" />
         </GoBackButton>
       </SpecificPerfilHeader>
-      <PerfilCard perfil={specificPerfil} />
+      <PerfilCard perfil={specificPerfil} refetch={refetch} />
     </SpecificPerfilCardContainer>
   );
 }

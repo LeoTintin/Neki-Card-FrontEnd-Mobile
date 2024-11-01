@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+
 import {
   HomeView,
   HomeContainer,
@@ -10,6 +11,7 @@ import {
   SearchWrapper,
   SearchIcon,
 } from "./styles";
+
 import PerfilCard from "../../Components/PerfilCard";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../routes/Router";
@@ -19,12 +21,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../../Components/Button";
 import Tittle from "../../Components/Tittle";
 import { MagnifyingGlass } from "phosphor-react-native";
-import { View } from "react-native";
+import Toast from "react-native-toast-message";
 
 type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 
 export default function Home() {
   const navigation = useNavigation<HomeNavigationProp>();
+
   const handleNavigate = () => {
     navigation.navigate("Register");
   };
@@ -39,7 +42,12 @@ export default function Home() {
     try {
       const token = await AsyncStorage.getItem("token");
       if (!token) {
-        console.error("Token não encontrado");
+        Toast.show({
+          type: "error",
+          text1: "Erro!",
+          text2: "Usuario não econtrado!",
+          visibilityTime: 1700,
+        });
         setLoading(false);
         return;
       }
@@ -52,10 +60,12 @@ export default function Home() {
       setFilteredPerfils(response.data);
     } catch (error) {
       if (error.response) {
-        console.error("Erro na resposta da API:", error.response.data);
-        console.error("Status:", error.response.status);
-      } else {
-        console.error("Erro ao buscar perfis:", error.message);
+        Toast.show({
+          type: "error",
+          text1: "Erro!",
+          text2: "Erro no servidor,tente novamente mais tarde",
+          visibilityTime: 1700,
+        });
       }
     } finally {
       setLoading(false);
@@ -99,6 +109,9 @@ export default function Home() {
           </SearchIcon>
         </SearchWrapper>
         <Tittle>Nenhum perfil encontrado</Tittle>
+        <Button onPress={handleNavigate}>
+          <HomeButtonText>Novo Perfil</HomeButtonText>
+        </Button>
       </NotFoundContainer>
     );
   }

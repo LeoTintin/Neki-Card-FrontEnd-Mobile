@@ -23,7 +23,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { ImagePickerResult } from "expo-image-picker";
 import { api } from "../../service/api";
@@ -76,6 +76,20 @@ export default function UpdatePerfil() {
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
+
+  const [isFocusedNome, setIsFocusedNome] = useState(false);
+  const [isFocusedNomeSocial, setIsFocusedNomeSocial] = useState(false);
+  const [isFocusedEmail, setIsFocusedEmail] = useState(false);
+  const [isFocusedTelefone, setIsFocusedTelefone] = useState(false);
+  const [isFocusedRedeSocial, setIsFocusedRedeSocial] = useState(false);
+
+  const nomeRef = useRef<any>(null);
+  const nomeSocialRef = useRef<any>(null);
+  const emailRef = useRef<any>(null);
+  const telefoneRef = useRef<any>(null);
+  const redeSocialRef = useRef<any>(null);
+  const dataNascimentoRef = useRef<any>(null);
+
   const toggleDatePicker = () => {
     setShowPicker(!showPicker);
   };
@@ -140,14 +154,9 @@ export default function UpdatePerfil() {
     if (!result.canceled) {
       const selectedFileUri = result.assets[0]?.uri;
       if (selectedFileUri) {
-        console.log("Imagem selecionada:", selectedFileUri);
         setSelectedFile(selectedFileUri);
         setValue("foto", selectedFileUri);
-      } else {
-        console.log("A URI da imagem não foi encontrada.");
       }
-    } else {
-      console.log("Seleção de imagem cancelada.");
     }
   };
 
@@ -189,7 +198,6 @@ export default function UpdatePerfil() {
       }
 
       const token = await AsyncStorage.getItem("token");
-      console.log("Token recuperado:", token);
 
       if (!token) {
         alert("Token não encontrado. Faça login novamente.");
@@ -235,11 +243,17 @@ export default function UpdatePerfil() {
         render={({ field: { onChange, value } }) => (
           <>
             <StyledTextInput
+              ref={nomeRef}
               placeholder="Nome"
               onChangeText={onChange}
               value={value}
+              isFocused={isFocusedNome}
+              onFocus={() => setIsFocusedNome(true)}
+              onBlur={() => setIsFocusedNome(false)}
               hasError={!!errors.nome}
               placeholderTextColor={"#349c98"}
+              returnKeyType="next"
+              onSubmitEditing={() => nomeSocialRef.current.focus()}
             />
             {errors.nome && <ErrorMessage>{errors.nome.message}</ErrorMessage>}
           </>
@@ -251,10 +265,16 @@ export default function UpdatePerfil() {
         name="nomeSocial"
         render={({ field: { onChange, value } }) => (
           <StyledTextInput
+            ref={nomeSocialRef}
             placeholder="Nome Social"
             onChangeText={onChange}
             value={value}
+            isFocused={isFocusedNomeSocial}
+            onFocus={() => setIsFocusedNomeSocial(true)}
+            onBlur={() => setIsFocusedNomeSocial(false)}
             placeholderTextColor={"#349c98"}
+            returnKeyType="next"
+            onSubmitEditing={() => emailRef.current.focus()}
           />
         )}
       />
@@ -265,11 +285,16 @@ export default function UpdatePerfil() {
         render={({ field: { onChange, value } }) => (
           <>
             <StyledTextInput
+              ref={emailRef}
               placeholder="E-mail"
               onChangeText={onChange}
               value={value}
+              isFocused={isFocusedEmail}
+              onFocus={() => setIsFocusedEmail(true)}
+              onBlur={() => setIsFocusedEmail(false)}
               hasError={!!errors.email}
               placeholderTextColor={"#349c98"}
+              onSubmitEditing={() => dataNascimentoRef.current.focus()}
             />
             {errors.email && (
               <ErrorMessage>{errors.email.message}</ErrorMessage>
@@ -285,6 +310,7 @@ export default function UpdatePerfil() {
           render={({ field: { value } }) => (
             <>
               <StyledTextInput
+                ref={dataNascimentoRef}
                 placeholder="Data de nascimento:  DD/MM/YYYY"
                 value={value}
                 hasError={!!errors.dataNascimento}
@@ -313,10 +339,16 @@ export default function UpdatePerfil() {
         name="telefone"
         render={({ field: { onChange, value } }) => (
           <StyledTextInput
+            ref={telefoneRef}
             placeholder="Numero de telefone"
             onChangeText={onChange}
             value={value}
+            isFocused={isFocusedTelefone}
+            onFocus={() => setIsFocusedTelefone(true)}
+            onBlur={() => setIsFocusedTelefone(false)}
             placeholderTextColor={"#349c98"}
+            returnKeyType="next"
+            onSubmitEditing={() => redeSocialRef.current.focus()}
           />
         )}
       />
@@ -325,9 +357,13 @@ export default function UpdatePerfil() {
         name="redeSocial"
         render={({ field: { onChange, value } }) => (
           <StyledTextInput
+            ref={redeSocialRef}
             placeholder="Rede Social"
             onChangeText={onChange}
             value={value}
+            isFocused={isFocusedRedeSocial}
+            onFocus={() => setIsFocusedRedeSocial(true)}
+            onBlur={() => setIsFocusedRedeSocial(false)}
             placeholderTextColor={"#349c98"}
           />
         )}
